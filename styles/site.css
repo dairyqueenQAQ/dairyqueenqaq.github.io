@@ -87,7 +87,7 @@ main > .portfolio-section:first-of-type { padding-top: var(--header-height); }
 .site-footer { display: none; }
 
 .page-home main { padding-top: 0; }
-.page-home .home-background { padding-top: var(--header-height); background-position: center top; background-repeat: repeat-y; background-size: cover; }
+.page-home .home-background { padding-top: var(--header-height); background-position: center; background-repeat: no-repeat; background-size: cover; }
 .page-home .site-header { background: linear-gradient(180deg, rgba(250,250,250,.86), rgba(250,250,250,.16)); }
 .page-home .portfolio-section.light { background: transparent; color: #fafafa; }
 .page-home .sqs-html-content h1 { font-size: calc(17px + 3 * var(--type-scale)); }
@@ -135,3 +135,8 @@ main > .portfolio-section:first-of-type { padding-top: var(--header-height); }
 
 .sqs-html-content li > p { margin: .5em 0; }
 .sqs-html-content li > ul, .sqs-html-content li > ol { margin: 0; }
+
+/* Original home image overlay and white section dividers. */
+.page-home .fe-block-ea38d43f1f2c71fd77ad .image-frame { position: relative; }
+.page-home .fe-block-ea38d43f1f2c71fd77ad .image-frame::after { content: ""; position: absolute; inset: 0; background: rgba(28,28,28,.69); pointer-events: none; }
+.page-home .sqs-block hr { background: #fff; opacity: 1; }
