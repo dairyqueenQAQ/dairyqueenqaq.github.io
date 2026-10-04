@@ -166,7 +166,7 @@ def block_markup(block, page: str, video_poster: str) -> str:
     elif "horizontalrule-block" in kind:
         body = '<div class="sqs-block"><hr aria-hidden="true"></div>'
     elif "video-block" in kind:
-        body = f'<div class="sqs-block video-block"><img src="{video_poster}" alt="Project video cover" loading="lazy"><span>VIDEO · YouTube link to follow</span></div>'
+        body = f'<div class="sqs-block video-block"><img src="{video_poster}" alt="Project video cover" loading="lazy"></div>'
     if not body:
         return ""
     return f'<div class="{html_std.escape(block_class)}">{body}</div>'
