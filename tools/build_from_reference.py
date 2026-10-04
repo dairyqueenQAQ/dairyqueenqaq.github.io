@@ -7,6 +7,7 @@ files in Assets are never modified or copied into the published site.
 from __future__ import annotations
 
 import html as html_std
+import re
 import tempfile
 from pathlib import Path
 from urllib.parse import unquote_plus, urlparse
@@ -158,11 +159,38 @@ def block_markup(block, page: str, video_poster: str) -> str:
                 alt = image.get("alt") or ""
                 if href and not alt:
                     alt = f"View {TITLES[href.strip('/')].split(' — ')[0]}" if href.strip("/") in TITLES else "View project"
-                img = f'<img src="{html_std.escape(src)}" alt="{html_std.escape(alt)}" loading="lazy" decoding="async">'
+                with Image.open(ROOT / src.lstrip("/")) as optimized:
+                    width, height = optimized.size
+                original_css = "\n".join(block.xpath('.//style/text()'))
+                fit = "cover" if "--image-component-object-fit: cover" in original_css else "contain"
+                wrapper = block.xpath('.//*[contains(@class, "image-block-outer-wrapper")]')
+                alignment = "center"
+                if wrapper:
+                    for candidate in ("left", "right", "center"):
+                        if f"image-position-{candidate}" in wrapper[0].get("class", ""):
+                            alignment = candidate
+                radius = re.search(r"(?<![-\w])border-radius:\s*([^;]+)", original_css)
+                focal = re.search(r"--image-component-focal-point:\s*([^;]+)", original_css)
+                native_ratio = re.search(r"--image-component-native-aspect-ratio:\s*(\d+)\s*/\s*(\d+)", original_css)
+                ratio = int(native_ratio.group(1)) / int(native_ratio.group(2)) if native_ratio else width / height
+                image_style = f"--image-ratio:{ratio};"
+                corners = []
+                for corner in ("top-left", "top-right", "bottom-right", "bottom-left"):
+                    value = re.search(rf"border-{corner}-radius:\s*([^;]+)", original_css)
+                    corners.append(value.group(1) if value else "0px")
+                if any(value != "0px" for value in corners):
+                    image_style += "--image-radius:" + " ".join(corners) + ";"
+                if radius:
+                    image_style += f"--image-radius:{radius.group(1)};"
+                if focal:
+                    image_style += f"--image-position:{focal.group(1)};"
+                img = f'<img src="{html_std.escape(src)}" width="{width}" height="{height}" alt="{html_std.escape(alt)}" loading="lazy" decoding="async">'
                 if href:
-                    img = f'<a class="image-link" href="{html_std.escape(href)}">{img}</a>'
-                fit = "cover" if "--image-component-object-fit: cover" in html.tostring(block, encoding="unicode") else "contain"
-                body = f'<div class="sqs-block image-block fit-{fit}">{img}</div>'
+                    img = f'<a class="image-link image-frame" href="{html_std.escape(href)}">{img}</a>'
+                else:
+                    img = f'<div class="image-frame">{img}</div>'
+                body = f'<div class="sqs-block image-block fit-{fit} image-align-{alignment}" style="{html_std.escape(image_style)}">{img}</div>'
+
     elif "horizontalrule-block" in kind:
         body = '<div class="sqs-block"><hr aria-hidden="true"></div>'
     elif "video-block" in kind:
@@ -203,7 +231,7 @@ def page_body(document, page: str) -> tuple[str, str]:
 def render_page(page: str) -> None:
     document = html.fromstring((SNAPSHOTS / f"{page}.html").read_text(encoding="utf-8"))
     body, grid_css = page_body(document, page)
-    body = body.replace('loading="lazy"', 'loading="eager" fetchpriority="high"', 2)
+    body = body.replace('loading="lazy"', 'loading="eager"', 8)
     if page == "home":
         bg_source = ROOT / "Assets" / "HomePage" / "BACKGROUND.png"
         if bg_source.exists():
