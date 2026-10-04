@@ -6,11 +6,11 @@ The published site has a home page, AboutMe page, and six project pages. Each pr
 
 `media/` contains web-sized WebP copies. The original `Assets/` folder remains local and is ignored by Git. PSDs and MP4s are not published.
 
-Video areas currently show a cover image. When YouTube links are ready, replace each `.video-block` in the relevant page's `index.html` with an embedded player using the video's privacy-enhanced `youtube-nocookie.com` URL and a descriptive `title`.
+TrigramDeduction, TheEdgeOfAbyss, TileTale, and BounceSpace embed their YouTube videos in the original reserved grid cells. Players use privacy-enhanced `youtube-nocookie.com` URLs, descriptive titles, fullscreen support, and lazy loading. Videos start when clicked. Update `YOUTUBE_VIDEOS` in `tools/build_from_reference.py` to change these videos.
 
 To preview locally, serve the repository root with any static HTTP server (for example, `python -m http.server 8765`).
 
-`tools/build_from_reference.py` can regenerate the pages and optimized images from the public original site and a local `Assets/` folder. It requires Python with `lxml` and `Pillow`. It overwrites generated page files, so edit those directly for small updates such as future YouTube embeds.
+`tools/build_from_reference.py` can regenerate the pages and optimized images from the public original site and a local `Assets/` folder. It requires Python with `lxml` and `Pillow`. It overwrites generated page files; update the generator for changes that must survive rebuilding.
 
 ## Desktop layout calibration
 

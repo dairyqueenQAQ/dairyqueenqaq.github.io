@@ -19,6 +19,13 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOTS = Path(tempfile.gettempdir()) / "dq-portfolio-reference"
+YOUTUBE_VIDEOS = {
+    "trigramdeduction": "AYaf3UySAeo",
+    "theedgeofabyss": "69mHDICAFfw",
+    "tiletale": "ua7cJMYrTsc",
+    "bouncespace": "_1f-Tdm-DdA",
+}
+
 PAGES = {
     "home": "HomePage",
     "aboutme": "AboutMe",
@@ -194,7 +201,17 @@ def block_markup(block, page: str, video_poster: str) -> str:
     elif "horizontalrule-block" in kind:
         body = '<div class="sqs-block"><hr aria-hidden="true"></div>'
     elif "video-block" in kind:
-        body = f'<div class="sqs-block video-block"><img src="{video_poster}" alt="Project video cover" loading="lazy"></div>'
+        video_id = YOUTUBE_VIDEOS.get(page)
+        if video_id:
+            title = html_std.escape(TITLES[page].split(" — ")[0] + " — Project video")
+            body = (f'<div class="sqs-block video-block">'
+                    f'<iframe src="https://www.youtube-nocookie.com/embed/{video_id}" '
+                    f'title="{title}" loading="lazy" '
+                    'referrerpolicy="strict-origin-when-cross-origin" '
+                    'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '
+                    'allowfullscreen></iframe></div>')
+        else:
+            body = f'<div class="sqs-block video-block"><img src="{video_poster}" alt="Project video cover" loading="lazy"></div>'
     if not body:
         return ""
     return f'<div class="{html_std.escape(block_class)}">{body}</div>'
