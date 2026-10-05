@@ -246,8 +246,16 @@ def page_body(document, page: str) -> tuple[str, str]:
 
 
 def customize_home(body: str, grid_css: str) -> tuple[str, str]:
-    """Move Bagua below Fox; retain an empty project slot at the old location."""
+    """Move Bagua below Fox and fill its former slot with the Shahai poster."""
     from copy import deepcopy
+    poster_source = ROOT / "Assets" / "HomePage" / "沙海寻遗横版海报最终.png"
+    poster_output = ROOT / "media" / "home" / "shahai-poster.webp"
+    if not poster_output.exists() or poster_source.stat().st_mtime > poster_output.stat().st_mtime:
+        with Image.open(poster_source) as poster:
+            poster.thumbnail((2200, 2200), Image.Resampling.LANCZOS)
+            poster.convert("RGB").save(poster_output, "WEBP", quality=88)
+    with Image.open(poster_output) as poster:
+        poster_width, poster_height = poster.size
     document = html.fragment_fromstring(body, create_parent="div")
     ids = ["de96d8f366034dfbdbd1", "342358eb2d278163c7de", "4aa92232216c58966446"]
     anchor = document.xpath('.//div[contains(@class,"fe-block-62fe5af491bbdc6fb8f9")]')[0]
@@ -260,12 +268,21 @@ def customize_home(body: str, grid_css: str) -> tuple[str, str]:
         if name == "image":
             for child in list(block):
                 block.remove(child)
-            block.append(html.fromstring('<div class="sqs-block" aria-hidden="true"></div>'))
+            block.append(html.fromstring(
+                '<div class="sqs-block image-block fit-contain image-align-center" style="--image-ratio:1.7777777777777777;">'
+                '<div class="image-frame">'
+                f'<img src="/media/home/shahai-poster.webp" width="{poster_width}" height="{poster_height}" '
+                'alt="沙海寻遗" loading="lazy" decoding="async"></div></div>'
+            ))
         else:
             content = block.xpath('.//div[@class="sqs-html-content"]')[0]
             for child in list(content):
                 content.remove(child)
-            content.append(html.fromstring('<h4>XXX</h4>'))
+            label = "2025.9—2026.5" if name == "date" else "Video Game--&gt;"
+            decoration = '' if name == "date" else ' style="text-decoration:underline;text-underline-offset:.12em;"'
+            content.append(html.fromstring(
+                f'<h4 style="white-space:pre-wrap;"><span class="sqsrte-text-color--lightAccent"{decoration}>{label}</span></h4>'
+            ))
 
     def shift_area(match):
         r1, c1, r2, c2 = map(int, match.groups())
