@@ -278,7 +278,7 @@ def customize_home(body: str, grid_css: str) -> tuple[str, str]:
             content = block.xpath('.//div[@class="sqs-html-content"]')[0]
             for child in list(content):
                 content.remove(child)
-            label = "2025.9—2026.5" if name == "date" else "Video Game--&gt;"
+            label = "2025.9—2026.5" if name == "date" else "Video Game →"
             decoration = '' if name == "date" else ' style="text-decoration:underline;text-underline-offset:.12em;"'
             content.append(html.fromstring(
                 f'<h4 style="white-space:pre-wrap;"><span class="sqsrte-text-color--lightAccent"{decoration}>{label}</span></h4>'
