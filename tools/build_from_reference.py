@@ -245,9 +245,60 @@ def page_body(document, page: str) -> tuple[str, str]:
     return "\n".join(markup), "\n".join(grid_css)
 
 
+def customize_home(body: str, grid_css: str) -> tuple[str, str]:
+    """Move Bagua below Fox; retain an empty project slot at the old location."""
+    from copy import deepcopy
+    document = html.fragment_fromstring(body, create_parent="div")
+    ids = ["de96d8f366034dfbdbd1", "342358eb2d278163c7de", "4aa92232216c58966446"]
+    anchor = document.xpath('.//div[contains(@class,"fe-block-62fe5af491bbdc6fb8f9")]')[0]
+    for suffix, name in zip(ids, ("image", "date", "link")):
+        block = document.xpath(f'.//div[contains(@class,"fe-block-{suffix}")]')[0]
+        moved = deepcopy(block)
+        moved.set("class", f"fe-block fe-block-home-bagua-{name}")
+        anchor.addnext(moved)
+        anchor = moved
+        if name == "image":
+            for child in list(block):
+                block.remove(child)
+            block.append(html.fromstring('<div class="sqs-block" aria-hidden="true"></div>'))
+        else:
+            content = block.xpath('.//div[@class="sqs-html-content"]')[0]
+            for child in list(content):
+                content.remove(child)
+            content.append(html.fromstring('<h4>XXX</h4>'))
+
+    def shift_area(match):
+        r1, c1, r2, c2 = map(int, match.groups())
+        if r1 >= 53:
+            r1 += 12
+        if r2 > 53:
+            r2 += 12
+        return f"grid-area: {r1}/{c1}/{r2}/{c2};"
+
+    grid_css = re.sub(r"grid-area:\s*(\d+)/(\d+)/(\d+)/(\d+);", shift_area, grid_css)
+    grid_css = grid_css.replace("repeat(106,", "repeat(118,").replace("repeat(60,", "repeat(72,")
+    grid_css += """
+/* Homepage project relocation; space is reserved in both responsive grids. */
+.fe-block-home-bagua-image { grid-area: 53/2/59/10; z-index: 2; }
+.fe-block-home-bagua-date { grid-area: 59/2/61/10; z-index: 2; }
+.fe-block-home-bagua-link { grid-area: 61/2/63/10; z-index: 2; }
+.fe-block-home-bagua-image .sqs-block { justify-content: center; }
+.fe-block-home-bagua-date .sqs-block,
+.fe-block-home-bagua-link .sqs-block { justify-content: flex-start; }
+@media (min-width: 768px) {
+  .fe-block-home-bagua-image { grid-area: 53/3/60/10; }
+  .fe-block-home-bagua-date { grid-area: 60/3/61/10; }
+  .fe-block-home-bagua-link { grid-area: 61/3/62/12; }
+}
+"""
+    return "".join(html.tostring(child, encoding="unicode") for child in document), grid_css
+
+
 def render_page(page: str) -> None:
     document = html.fromstring((SNAPSHOTS / f"{page}.html").read_text(encoding="utf-8"))
     body, grid_css = page_body(document, page)
+    if page == "home":
+        body, grid_css = customize_home(body, grid_css)
     body = body.replace('loading="lazy"', 'loading="eager"', 8)
     if page == "home":
         bg_source = ROOT / "Assets" / "HomePage" / "BACKGROUND.png"
