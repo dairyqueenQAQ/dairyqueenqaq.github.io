@@ -2,7 +2,7 @@
 
 Static GitHub Pages version of [zhangdingqian.com](https://www.zhangdingqian.com/).
 
-The published site has a home page, AboutMe page, and six project pages. Each project is a directory with its own `index.html`, so direct links such as `/tiletale/` work on GitHub Pages. Layout and navigation styles are shared in `styles/site.css`; the page-specific grid positions are in `styles/pages/`. The mobile menu is in `scripts/site.js`.
+The published site has a home page, AboutMe page, and seven project pages. Each project is a directory with its own `index.html`, so direct links such as `/tiletale/` work on GitHub Pages. Layout and navigation styles are shared in `styles/site.css`; the page-specific grid positions are in `styles/pages/`. The mobile menu is in `scripts/site.js`.
 
 `media/` contains web-sized WebP copies. The original `Assets/` folder remains local and is ignored by Git. PSDs and MP4s are not published.
 
@@ -11,6 +11,12 @@ TrigramDeduction, TheEdgeOfAbyss, TileTale, and BounceSpace embed their YouTube 
 To preview locally, serve the repository root with any static HTTP server (for example, `python -m http.server 8765`).
 
 `tools/build_from_reference.py` can regenerate the pages and optimized images from the public original site and a local `Assets/` folder. It requires Python with `lxml` and `Pillow`. It overwrites generated page files; update the generator for changes that must survive rebuilding.
+
+## Lost in the Sands
+
+`/lostinthesands/` is not part of the old site, so the generator does not rebuild it. The page and `styles/pages/lostinthesands.css` are written by hand from the Figma frame "网页" in the `graduate-design` file: lengths in the stylesheet are Figma pixels multiplied by `--u`, which scales the 2560px design to the viewport. The sand image is a fixed full-viewport background. The YouTube video ID is in the page HTML.
+
+Its images come from the Figma source images saved in `Assets/LostInTheSands/`. Run `python tools/build_lostinthesands_media.py` (requires `Pillow`) to rebuild `media/lostinthesands/`.
 
 ## Desktop layout calibration
 

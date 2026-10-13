@@ -246,7 +246,7 @@ def page_body(document, page: str) -> tuple[str, str]:
 
 
 def customize_home(body: str, grid_css: str) -> tuple[str, str]:
-    """Move Bagua below Fox and fill its former slot with the Shahai poster."""
+    """Move Bagua below Fox and fill its former slot with the Lost in the Sands card."""
     from copy import deepcopy
     poster_source = ROOT / "Assets" / "HomePage" / "沙海寻遗横版海报最终.png"
     poster_output = ROOT / "media" / "home" / "shahai-poster.webp"
@@ -270,19 +270,18 @@ def customize_home(body: str, grid_css: str) -> tuple[str, str]:
                 block.remove(child)
             block.append(html.fromstring(
                 '<div class="sqs-block image-block fit-contain image-align-center" style="--image-ratio:1.7777777777777777;">'
-                '<div class="image-frame">'
+                '<a class="image-link image-frame" href="/lostinthesands/">'
                 f'<img src="/media/home/shahai-poster.webp" width="{poster_width}" height="{poster_height}" '
-                'alt="沙海寻遗" loading="lazy" decoding="async"></div></div>'
+                'alt="View Lost in the Sands" loading="lazy" decoding="async"></a></div>'
             ))
         else:
             content = block.xpath('.//div[@class="sqs-html-content"]')[0]
             for child in list(content):
                 content.remove(child)
-            label = "2025.9—2026.5" if name == "date" else "Video Game →"
-            decoration = '' if name == "date" else ' style="text-decoration:underline;text-underline-offset:.12em;"'
-            content.append(html.fromstring(
-                f'<h4 style="white-space:pre-wrap;"><span class="sqsrte-text-color--lightAccent"{decoration}>{label}</span></h4>'
-            ))
+            label = '<span class="sqsrte-text-color--lightAccent">' + ("2025.9—2026.5" if name == "date" else "Video Game →") + '</span>'
+            if name == "link":
+                label = f'<a href="/lostinthesands/">{label}</a>'
+            content.append(html.fromstring(f'<h4 style="white-space:pre-wrap;">{label}</h4>'))
 
     def shift_area(match):
         r1, c1, r2, c2 = map(int, match.groups())

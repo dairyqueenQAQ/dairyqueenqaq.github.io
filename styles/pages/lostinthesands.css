@@ -1,0 +1,63 @@
+/* Hand-authored from the Figma frame "网页" (2560px wide, 1600px content column).
+   --u is one design pixel, so lengths below are the Figma values. */
+.page-lostinthesands {
+  --col: min(1600px, max(62.5vw, min(92vw, 1000px)));
+  --u: calc(var(--col) / 1600);
+}
+
+.page-lostinthesands main > .portfolio-section:first-of-type { padding-top: 0; padding-bottom: 0; }
+
+.sands-column {
+  width: var(--col);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: calc(var(--header-height) + 42 * var(--u)) 0 calc(104 * var(--u));
+  background: rgba(217, 217, 217, .2);
+  color: #fff;
+  font-size: calc(64 * var(--u));
+  line-height: 1.174;
+}
+.sands-column > p, .sands-column > h2 { margin: 0; padding: 0 calc(42 * var(--u)); font-size: inherit; font-weight: 400; }
+.sands-column > h2 { margin-top: calc(56 * var(--u)); }
+.sands-video + h2 { margin-top: calc(104 * var(--u)); }
+
+.sands-title { width: calc(1568 * var(--u)); margin: calc(27 * var(--u)) 0 0 calc(26 * var(--u)); }
+.sands-title img { width: 100%; height: auto; }
+
+.sands-tags { display: flex; gap: calc(101 * var(--u)); margin: calc(52 * var(--u)) 0 0; padding: 0 0 0 calc(54 * var(--u)); list-style: none; font-size: calc(48 * var(--u)); }
+.sands-tags li { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center; gap: calc(21 * var(--u)); min-width: calc(500 * var(--u)); height: calc(106 * var(--u)); padding: 0 calc(19 * var(--u)) 0 calc(20 * var(--u)); border-radius: calc(41 * var(--u)); white-space: nowrap; }
+.sands-tags li:nth-child(2) { min-width: calc(551 * var(--u)); padding-left: calc(26 * var(--u)); }
+.sands-tags li img { position: relative; top: calc(-5 * var(--u)); width: calc(72 * var(--u)); height: calc(58 * var(--u)); }
+/* Each tag shows its own crop of the sand texture at 60% opacity. */
+.sands-tags li::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .6; background: url('/media/lostinthesands/tag-texture.webp') 67.06% 27.7% / 202.35% auto no-repeat; }
+.sands-tags-large li:nth-child(2)::before { background-position-x: 53.27%; background-size: 183.47% auto; }
+
+.sands-tags-small { gap: calc(24 * var(--u)); margin-top: calc(31 * var(--u)); font-size: calc(36 * var(--u)); }
+.sands-tags-small li,
+.sands-tags-small li:nth-child(2) { justify-content: center; min-width: calc(418 * var(--u)); height: calc(78 * var(--u)); padding: 0 calc(20 * var(--u)); }
+.sands-tags-small li:nth-child(3) { min-width: calc(493 * var(--u)); }
+.sands-tags-small li::before { background-position: 50.47% 26%; background-size: 275.94% auto; }
+.sands-tags-small li:nth-child(3)::before { background-position-x: 56.2%; background-size: 233.96% auto; }
+
+.sands-posters { display: grid; grid-auto-flow: column; grid-template-rows: minmax(0, 357fr) minmax(0, 422fr); grid-template-columns: minmax(0, 634fr) minmax(0, 448fr) minmax(0, 519fr); aspect-ratio: 1601 / 779; margin-top: calc(96 * var(--u)); }
+.sands-posters img { width: 100%; height: 100%; min-height: 0; object-fit: cover; }
+.sands-posters img:nth-child(n+3) { grid-row: 1 / 3; }
+
+/* The Figma placeholder is 1593x813; the player keeps that width at 16:9. */
+.sands-video { width: calc(1593 * var(--u)); aspect-ratio: 16 / 9; margin: calc(45 * var(--u)) 0 0 auto; }
+
+@media (max-width: 767px) {
+  .page-lostinthesands { --col: 88vw; }
+  .sands-column { padding-top: calc(110px + 42 * var(--u)); font-size: clamp(23px, 6vw, 32px); }
+  .sands-column > p, .sands-column > h2, .sands-tags { padding: 0 4vw; }
+  .sands-column > h2 { margin-top: 20px; }
+  .sands-video + h2 { margin-top: 28px; }
+  .sands-title { margin-top: 8px; }
+  .sands-tags { flex-wrap: wrap; gap: 10px; margin-top: 16px; font-size: clamp(16px, 4.5vw, 21px); }
+  .sands-tags li,
+  .sands-tags li:nth-child(n) { gap: .45em; min-width: 0; height: auto; padding: .45em .9em; border-radius: 999px; }
+  .sands-tags li img { top: -.05em; width: 1.5em; height: 1.2em; }
+  .sands-tags-small { margin-top: 10px; font-size: clamp(14px, 3.8vw, 18px); }
+  .sands-posters { margin-top: 24px; }
+  .sands-video { margin-top: 12px; }
+}
