@@ -12,7 +12,6 @@
   min-height: 100vh;
   margin: 0 auto;
   padding: calc(var(--header-height) + 42 * var(--u)) 0 calc(104 * var(--u));
-  background: rgba(217, 217, 217, .2);
   color: #fff;
   font-size: calc(64 * var(--u));
   line-height: 1.174;
